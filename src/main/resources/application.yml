@@ -4,6 +4,12 @@ server:
       charset: UTF-8
       enabled: true
       force: true
+  error:
+    include-stacktrace: always
+    include-message: always
+    include-binding-errors: always
+    whitelabel:
+      enabled: false
 
 spring:
   datasource:
@@ -13,9 +19,7 @@ spring:
     password: 123456
   h2:
     console:
-      enabled: true
-      settings:
-        web-allow-others: true
+      enabled: false
   sql.init:
     mode: always
     schema-locations: classpath:schema.sql
@@ -36,3 +40,14 @@ mybatis-plus:
   global-config:
     db-config:
       ddl-auto: none
+
+logging:
+  level:
+    root: INFO
+    com.shop.aifruit: DEBUG
+    org.springframework: DEBUG
+    org.springframework.web: DEBUG
+    org.mybatis: DEBUG
+    com.baomidou.mybatisplus: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
