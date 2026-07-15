@@ -1,0 +1,10 @@
+INSERT INTO t_fruit (fruit_name, price, stock, origin) VALUES ('苹果', 5.99, 100, '山东');
+INSERT INTO t_fruit (fruit_name, price, stock, origin) VALUES ('香蕉', 3.50, 80, '海南');
+INSERT INTO t_fruit (fruit_name, price, stock, origin) VALUES ('橙子', 4.99, 120, '江西');
+INSERT INTO t_fruit (fruit_name, price, stock, origin) VALUES ('葡萄', 8.99, 60, '新疆');
+INSERT INTO t_fruit (fruit_name, price, stock, origin) VALUES ('西瓜', 2.99, 50, '宁夏');
+INSERT INTO t_fruit (fruit_name, price, stock, origin) VALUES ('草莓', 12.99, 40, '丹东');
+INSERT INTO t_fruit (fruit_name, price, stock, origin) VALUES ('芒果', 9.99, 70, '广西');
+INSERT INTO t_fruit (fruit_name, price, stock, origin) VALUES ('榴莲', 39.99, 20, '泰国');
+INSERT INTO t_fruit (fruit_name, price, stock, origin) VALUES ('樱桃', 15.99, 30, '大连');
+INSERT INTO t_fruit (fruit_name, price, stock, origin) VALUES ('蓝莓', 18.99, 25, '智利');

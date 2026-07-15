@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>水果商品溯源管理系统 - 管理首页</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            margin-bottom: 0;
+            border-radius: 0;
+        }
+        .navbar-inverse {
+            background-color: #337ab7;
+            border-color: #2e6da4;
+        }
+        .navbar-inverse .navbar-brand {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .navbar-inverse .navbar-nav>li>a {
+            color: #fff;
+        }
+        .navbar-inverse .navbar-nav>li>a:hover {
+            background-color: #286090;
+        }
+        .content-area {
+            padding: 20px;
+            margin-top: 60px;
+        }
+        .page-header {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .page-header h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        .stat-card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        .stat-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .panel {
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .panel-heading {
+            background-color: #fff !important;
+            border-bottom: 1px solid #eee;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0 !important;
+        }
+        .panel-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        .table {
+            margin-bottom: 0;
+        }
+        .table th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+        .view-all {
+            float: right;
+            font-size: 14px;
+            color: #337ab7;
+        }
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #337ab7;
+            color: #fff;
+            text-align: center;
+            line-height: 30px;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .dropdown-menu>li>a {
+            padding: 8px 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/index">🍎 水果商品溯源管理系统</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="/index">管理首页</a></li>
+                    <li><a href="/fruit/manage">水果商品管理</a></li>
+                    <li><a href="/stats/stock">库存数据统计</a></li>
+                    <li><a href="/fruit/ai">AI水果问答</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="avatar" th:text="${username.charAt(0)}"></span>
+                            <span th:text="${username}"></span>
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/logout">退出登录</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container content-area">
+        <div class="page-header">
+            <h1>管理首页</h1>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">🍇</div>
+                    <div class="stat-number" th:text="${totalFruits}"></div>
+                    <div class="stat-label">水果总品类</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-number" th:text="${totalStock}"></div>
+                    <div class="stat-label">总库存数量</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-number" th:text="${inStockCount}"></div>
+                    <div class="stat-label">在售商品数</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-number" th:text="${lowStockCount}"></div>
+                    <div class="stat-label">低库存预警</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="panel-title">最新录入水果</span>
+                <a href="/fruit/manage" class="view-all">查看全部</a>
+            </div>
+            <div class="panel-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>水果名称</th>
+                            <th>单价</th>
+                            <th>库存</th>
+                            <th>产地</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="fruit : ${fruitList}">
+                            <td th:text="${fruit.id}"></td>
+                            <td th:text="${fruit.fruitName}"></td>
+                            <td th:text="'¥' + ${fruit.price}"></td>
+                            <td th:text="${fruit.stock}"></td>
+                            <td th:text="${fruit.origin}"></td>
+                            <td>
+                                <a href="/fruit/manage" class="btn btn-xs btn-primary">查看详情</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${fruitList == null or fruitList.isEmpty()}">
+                            <td colspan="6" class="text-center">暂无数据</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

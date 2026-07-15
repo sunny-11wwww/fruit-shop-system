@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>水果商品溯源管理系统 - 水果商品管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f5f7fa; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+        .navbar { margin-bottom: 0; border-radius: 0; }
+        .navbar-inverse { background-color: #337ab7; border-color: #2e6da4; }
+        .navbar-inverse .navbar-brand { color: #fff; font-size: 18px; font-weight: bold; }
+        .navbar-inverse .navbar-nav>li>a { color: #fff; }
+        .navbar-inverse .navbar-nav>li>a:hover { background-color: #286090; }
+        .content-area { padding: 20px; margin-top: 60px; }
+        .page-header { margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .page-header h1 { font-size: 24px; color: #333; }
+        .panel { border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .panel-heading { background-color: #fff !important; border-bottom: 1px solid #eee; padding: 15px 20px; border-radius: 8px 8px 0 0 !important; }
+        .panel-title { font-size: 16px; font-weight: bold; color: #333; }
+        .table { margin-bottom: 0; }
+        .table th { background-color: #f8f9fa; border-bottom: 2px solid #dee2e6; }
+        .table td { vertical-align: middle; }
+        .fruit-image { width: 60px; height: 60px; border-radius: 4px; object-fit: cover; }
+        .btn-add { margin-bottom: 15px; }
+        .pagination { margin: 15px 0; }
+        .modal-content { border-radius: 8px; }
+        .modal-header { background-color: #337ab7; color: #fff; border-radius: 8px 8px 0 0; }
+        .modal-header .close { color: #fff; }
+        .form-group { margin-bottom: 15px; }
+        .avatar { width: 30px; height: 30px; border-radius: 50%; background-color: #337ab7; color: #fff; text-align: center; line-height: 30px; display: inline-block; margin-right: 8px; }
+        .search-box { margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/index">🍎 水果商品溯源管理系统</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/index">管理首页</a></li>
+                    <li class="active"><a href="/fruit/manage">水果商品管理</a></li>
+                    <li><a href="/stats/stock">库存数据统计</a></li>
+                    <li><a href="/fruit/ai">AI水果问答</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="avatar" th:text="${username.charAt(0)}"></span>
+                            <span th:text="${username}"></span>
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/logout">退出登录</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container content-area">
+        <div class="page-header">
+            <h1>水果商品管理</h1>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="panel-title">水果列表</span>
+                <button class="btn btn-primary btn-add pull-right" data-toggle="modal" data-target="#addModal">新增水果</button>
+            </div>
+            <div class="panel-body">
+                <div class="search-box">
+                    <form class="form-inline" th:action="@{/fruit/manage}" method="get">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="按名称或产地搜索">
+                        </div>
+                        <button type="submit" class="btn btn-default">搜索</button>
+                    </form>
+                </div>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>图片</th>
+                            <th>名称</th>
+                            <th>单价</th>
+                            <th>库存</th>
+                            <th>产地</th>
+                            <th>上市周期</th>
+                            <th>储存说明</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="fruit : ${fruitPage.records}">
+                            <td>
+                                <img th:src="${fruit.imageUrl}" 
+                                     th:alt="${fruit.fruitName}"
+                                     class="fruit-image"
+                                     onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2760%27 height=%2760%27 viewBox=%270 0 60 60%27%3E%3Crect fill=%27%23f0f0f0%27 width=%2760%27 height=%2760%27 rx=%274%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 text-anchor=%27middle%27 dominant-baseline=%27middle%27 font-family=%27Arial%27 font-size=%2724%27 fill=%27%23ccc%27%3E🍎%3C/text%3E%3C/svg%3E'">
+                            </td>
+                            <td th:text="${fruit.fruitName}"></td>
+                            <td th:text="'¥' + ${fruit.price}"></td>
+                            <td th:text="${fruit.stock}"></td>
+                            <td th:text="${fruit.origin}"></td>
+                            <td th:text="${fruit.harvestMonth}"></td>
+                            <td th:text="${fruit.storageMethod}"></td>
+                            <td>
+                                <button class="btn btn-xs btn-primary edit-btn" data-id="${fruit.id}">编辑</button>
+                                <a th:href="@{/fruit/manage/delete/{id}(id=${fruit.id})}" class="btn btn-xs btn-danger" onclick="return confirm('确定删除？')">删除</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${fruitPage.records == null or fruitPage.records.isEmpty()}">
+                            <td colspan="8" class="text-center">暂无数据</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <nav>
+                    <ul class="pagination">
+                        <li th:class="${currentPage == 1 ? 'disabled' : ''}">
+                            <a th:href="@{/fruit/manage(pageNum=${currentPage-1}, keyword=${keyword})}">上一页</a>
+                        </li>
+                        <li th:each="page : ${#numbers.sequence(1, totalPages)}" th:class="${page == currentPage ? 'active' : ''}">
+                            <a th:href="@{/fruit/manage(pageNum=${page}, keyword=${keyword})}" th:text="${page}"></a>
+                        </li>
+                        <li th:class="${currentPage == totalPages ? 'disabled' : ''}">
+                            <a th:href="@{/fruit/manage(pageNum=${currentPage+1}, keyword=${keyword})}">下一页</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">新增水果</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="addForm">
+                        <div class="form-group"><label>水果名称</label><input type="text" class="form-control" name="fruitName" required></div>
+                        <div class="form-group"><label>单价</label><input type="number" step="0.01" class="form-control" name="price" required></div>
+                        <div class="form-group"><label>库存</label><input type="number" class="form-control" name="stock" required></div>
+                        <div class="form-group"><label>产地</label><input type="text" class="form-control" name="origin" required></div>
+                        <div class="form-group"><label>图片URL</label><input type="text" class="form-control" name="imageUrl"></div>
+                        <div class="form-group"><label>上市周期</label><input type="text" class="form-control" name="harvestMonth"></div>
+                        <div class="form-group"><label>储运方式</label><input type="text" class="form-control" name="storageMethod"></div>
+                        <div class="form-group"><label>保鲜天数</label><input type="number" class="form-control" name="freshnessDays"></div>
+                        <div class="form-group"><label>最佳食用周期</label><input type="text" class="form-control" name="bestEatPeriod"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="submitAdd()">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">编辑水果</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <input type="hidden" name="id" id="editId">
+                        <div class="form-group"><label>水果名称</label><input type="text" class="form-control" name="fruitName" id="editFruitName" required></div>
+                        <div class="form-group"><label>单价</label><input type="number" step="0.01" class="form-control" name="price" id="editPrice" required></div>
+                        <div class="form-group"><label>库存</label><input type="number" class="form-control" name="stock" id="editStock" required></div>
+                        <div class="form-group"><label>产地</label><input type="text" class="form-control" name="origin" id="editOrigin" required></div>
+                        <div class="form-group"><label>图片URL</label><input type="text" class="form-control" name="imageUrl" id="editImageUrl"></div>
+                        <div class="form-group"><label>上市周期</label><input type="text" class="form-control" name="harvestMonth" id="editHarvestMonth"></div>
+                        <div class="form-group"><label>储运方式</label><input type="text" class="form-control" name="storageMethod" id="editStorageMethod"></div>
+                        <div class="form-group"><label>保鲜天数</label><input type="number" class="form-control" name="freshnessDays" id="editFreshnessDays"></div>
+                        <div class="form-group"><label>最佳食用周期</label><input type="text" class="form-control" name="bestEatPeriod" id="editBestEatPeriod"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="submitEdit()">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            function submitAdd() {
+                $.ajax({
+                    url: '/fruit/manage/add',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify($('#addForm').serializeArray().reduce(function(obj, item) {
+                        obj[item.name] = item.value; return obj;
+                    }, {})),
+                    success: function() { location.reload(); },
+                    error: function(xhr) { alert('新增失败: ' + xhr.status); }
+                });
+            }
+
+            $('body').on('click', '.edit-btn', function() {
+                var btn = $(this);
+                var id = btn.data('id');
+                if (!id) {
+                    alert('未获取到水果ID');
+                    return;
+                }
+                $.getJSON('/fruit/manage/get/' + id, function(data) {
+                    if (data && data.id) {
+                        $('#editId').val(data.id);
+                        $('#editFruitName').val(data.fruitName);
+                        $('#editPrice').val(data.price);
+                        $('#editStock').val(data.stock);
+                        $('#editOrigin').val(data.origin);
+                        $('#editImageUrl').val(data.imageUrl);
+                        $('#editHarvestMonth').val(data.harvestMonth);
+                        $('#editStorageMethod').val(data.storageMethod);
+                        $('#editFreshnessDays').val(data.freshnessDays);
+                        $('#editBestEatPeriod').val(data.bestEatPeriod);
+                        $('#editModal').modal('show');
+                    } else {
+                        alert('未找到水果数据');
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    alert('获取数据失败: ' + jqXHR.status + ' - ' + textStatus);
+                });
+            });
+
+            function submitEdit() {
+                $.ajax({
+                    url: '/fruit/manage/update',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify($('#editForm').serializeArray().reduce(function(obj, item) {
+                        obj[item.name] = item.value; return obj;
+                    }, {})),
+                    success: function() { 
+                        $('#editModal').modal('hide');
+                        location.reload(); 
+                    },
+                    error: function(xhr) { alert('更新失败: ' + xhr.status); }
+                });
+            }
+
+            window.submitAdd = submitAdd;
+            window.submitEdit = submitEdit;
+        });
+    </script>
+</body>
+</html>
